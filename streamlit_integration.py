@@ -145,7 +145,7 @@ def main():
 
     
     st.dataframe(data=df)
-    st.map(data=df)
+    st.map(data=df, color='#4578e7', size=.5)
 
 
 if __name__ == '__main__':
