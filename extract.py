@@ -82,7 +82,7 @@ def main():
 
 
     download_directory = create_dated_directory(download_path)
-    os.chmod(download_directory, 0o744)
+    os.chmod(path=download_directory, mode=0o744)
 
     print("----- Download directory configured -----")
     print(download_directory, '\n')
@@ -118,7 +118,7 @@ def main():
     for file in os.listdir(download_directory):
 
         filepath = f"{download_directory}/{file}"
-        os.chmod(filepath, 0o744)
+        os.chmod(path=filepath, mode=0o744)
         try:
             with zipfile.ZipFile(filepath, 'r') as file_ref:
                 file_ref.extractall(download_directory)
