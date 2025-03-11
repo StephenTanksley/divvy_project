@@ -16,18 +16,18 @@ app = FastAPI()
 
 origins = ['http://localhost:3000']
 
-load_dotenv(f'{os.getcwd()}\\data_capture\\.env')
+load_dotenv(f'{os.getcwd()}/data_capture/.env')
 
 # load_dotenv('C:\\Users\\steph\\Documents\\Lambda Projects\\Lambda-Comp-Sci\\python_projects\\data_pipeline\\data_capture\\.env')
 
 # Async sessionmaking.
 # https://www.youtube.com/watch?v=cH0immwfykI
 
-username = os.getenv('DB_USERNAME') or 'postgres'
-password = os.getenv('DB_PASSWORD') or 'D0nkeyK0ng!'
-host = os.getenv('DB_HOST_DOCKER') or '127.0.0.1'
-port = os.getenv('DB_PORT') or 5432
-database = os.getenv('DB_NAME') or 'divvy'
+username = os.getenv('DB_USERNAME')
+password = os.getenv('DB_PASSWORD')
+host = os.getenv('DB_HOST_DOCKER')
+port = os.getenv('DB_PORT')
+database = os.getenv('DB_NAME')
 
 engine = configure_sqlalchemy_conn(username=username,
                                    password=password,
