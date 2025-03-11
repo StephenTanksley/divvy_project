@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import typing
 import zipfile
@@ -15,7 +16,7 @@ from utils import (
 from playwright.sync_api import Page, Playwright, sync_playwright
 from sql_queries import queries
 
-load_dotenv('/home/stephen-tanksley/Documents/Code/Python_Projects/divvy_project/api/.env')
+load_dotenv('/home/stephen-tanksley/Documents/Code/Python_Projects/divvy_project/.env')
 
 """
     EXTRACTION
@@ -76,13 +77,10 @@ def main():
     host = os.getenv('DB_HOST')
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
-    database = os.getenv('DB_DATABASE_NAME')  
-
-    print(host, username, password, database)
-
+    database = os.getenv('DB_NAME')  
 
     download_directory = create_dated_directory(download_path)
-    os.chmod(path=download_directory, mode=0o744)
+    os.chmod(path=download_directory, mode=0o777)
 
     print("----- Download directory configured -----")
     print(download_directory, '\n')
@@ -118,7 +116,7 @@ def main():
     for file in os.listdir(download_directory):
 
         filepath = f"{download_directory}/{file}"
-        os.chmod(path=filepath, mode=0o744)
+        os.chmod(path=filepath, mode=0o777)
         try:
             with zipfile.ZipFile(filepath, 'r') as file_ref:
                 file_ref.extractall(download_directory)
