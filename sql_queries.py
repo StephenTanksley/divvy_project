@@ -15,11 +15,18 @@ queries = {
         """
     ),
 
-    'select_ingested_files_by_file_id': sa.text(
+    'select_ingested_files_by_filename': sa.text(
         """
             SELECT id, filename
             FROM divvy.dbo.ingested_files
             WHERE filename = (:filename);
+        """
+    ),
+        'select_ingested_files_by_id': sa.text(
+        """
+            SELECT id, filename
+            FROM divvy.dbo.ingested_files
+            WHERE id = (:id);
         """
     ),
 
@@ -38,7 +45,7 @@ queries = {
         """
             SELECT *
             FROM INFORMATION_SCHEMA.TABLES
-            WHERE TABLE_NAME = 'divvy_trips'
+            WHERE TABLE_NAME = 'trips'
             AND TABLE_SCHEMA = 'raw';
         """
     ),
@@ -132,5 +139,21 @@ queries = {
                 AND ss.lat BETWEEN (:min_lat) AND (:max_lat)
                 AND ss.lng BETWEEN (:min_lng) AND (:max_lng);
         """
-    )
+    ),
+    'select_unique_station_info':
+        """
+            SELECT 
+                s.start_station_id station_id, 
+                s.start_station_name station_name, 
+                s.start_lat lat, 
+                s.start_lng lng
+            FROM self s
+            UNION
+            SELECT 
+                e.end_station_id station_id, 
+                e.end_station_name station_name, 
+                e.end_lat lat, 
+                e.end_lng lng
+            FROM self e
+            """
 }
