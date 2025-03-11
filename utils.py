@@ -3,16 +3,7 @@ import json
 import datetime
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from sql_queries import queries
-
-
-username = 'sa'
-password = 'D0nkeyK0ng!'
-database = 'divvy'
-host = 'localhost'
-port = 1433
 
 
 def construct_element_dict(
@@ -32,56 +23,50 @@ def configure_sqlalchemy_conn(
         password: str,
         database: str,
         host: str,
-        port: int = 1433
+        db_engine: str
 ):
-    engine = create_engine(
-        f"mssql+pyodbc://{username}:{password}@{host}:{port}/{database}?driver=ODBC Driver 17 for SQL Server")
+    conn_strings = {
+        'mssql': f"mssql+pyodbc://{username}:{password}@{host}:1433/{database}?driver=ODBC Driver 17 for SQL Server",
+        'postgresql': f"postgresql+psycopg2://{username}:{password}@{host}:5432/{database}"
+    }
+    engine = create_engine(conn_strings[db_engine])
     return engine
 
 
-def create_dated_directory(parent_directory) -> str:
+def create_dated_directory(parent_directory: str) -> str:
     curr_date = str(datetime.datetime.now())
     print(curr_date[:10])
 
-    parent_dir = parent_directory
+    parent_dir: str = parent_directory
     os.chdir(parent_dir)
-    download_directory_path = parent_dir + curr_date[:10] + "\\"
+    download_directory_path = f"{parent_dir}{os.sep}{curr_date[:10]}"
 
     if curr_date[:10] not in os.listdir(parent_dir):
         print("No destination directory for current date. Creating new directory...")
-        os.mkdir(curr_date[:11])
+        os.mkdir(curr_date[:10])
         print(os.listdir(parent_dir))
     else:
-        print("Directory path exists: ", parent_dir + curr_date[:10] + "\\")
+        print("Directory path exists: ", f"{parent_dir}{os.sep}{curr_date[:10]}")
 
     return download_directory_path
 
 
-def read_configuration_json(filepath):
+def read_configuration_json(filepath) -> dict:
     with open(filepath, 'r') as file:
-        config = json.load(file)
+        config: dict = json.load(file)
     return config
 
 
-def setup_driver(parent_download_dir: str = None) -> webdriver.Firefox:
-    download_directory = create_dated_directory(parent_download_dir)
+def check_station_ids(engine) -> list:
+    with engine.connect() as conn:
+        try:
+            stations = conn.execute(queries['select_raw_station_ids'])
+        except Exception as e:
+            print("There was a problem: ", e)
+            raise e
+        return stations
 
-    options = Options()
-    options.set_preference("browser.download.folderList", 2)
-    options.set_preference(
-        "browser.download.manager.showWhenStarting", True)
-    options.set_preference(
-        "browser.download.dir", download_directory)
-    options.set_preference(
-        "browser.helperApps.neverAsk.saveToDisk", "application/octet-stream")
-    options.add_argument('--headless')
-    driver = webdriver.Firefox(
-        options=options)
-
-    return driver
-
-
-def get_ingested_filenames(engine):
+def get_ingested_filenames(engine) -> list:
     # TODO: This might not actually need to be a separate function at all
     # because I'm only expecting to call this in one place and won't need
     # repeated usages.
@@ -90,7 +75,7 @@ def get_ingested_filenames(engine):
         return filenames
 
 
-def update_ingested_files(engine, filename):
+def update_ingested_files(engine, filename: str = None) -> None:
     with engine.connect() as conn:
         # This line will write the table name to divvy.dbo.ingested_files
         conn.execute(queries['insert_table_retrieved'].bindparams(
@@ -118,3 +103,20 @@ def create_station_relations_graph():
             starting and ending station as a composite primary key.
     """
     ...
+
+if __name__ == '__main__':
+    project_dir = '/home/stephen-tanksley/Documents/Source_Data/2024-07-13'
+    username = os.getenv('DB_USERNAME') or 'postgres'
+    password = os.getenv('DB_PASSWORD') or 'D0nkeyK0ng!'
+    host = os.getenv('DB_HOST') or '127.0.0.1'
+    database = os.getenv('DB_NAME') or 'divvy'
+
+    engine = configure_sqlalchemy_conn(username=username,
+                                       password=password,
+                                       host=host,
+                                       database=database,
+                                       db_engine='postgresql')
+    engine_url = engine
+
+
+    print(check_station_ids(engine=engine_url).fetchall())
