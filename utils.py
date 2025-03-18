@@ -106,10 +106,10 @@ def create_station_relations_graph():
 
 if __name__ == '__main__':
     project_dir = '/home/stephen-tanksley/Documents/Source_Data/2024-07-13'
-    username = os.getenv('DB_USERNAME') or 'postgres'
-    password = os.getenv('DB_PASSWORD') or 'D0nkeyK0ng!'
-    host = os.getenv('DB_HOST') or '127.0.0.1'
-    database = os.getenv('DB_NAME') or 'divvy'
+    username = os.getenv('DB_USERNAME')
+    password = os.getenv('DB_PASSWORD')
+    host = os.getenv('DB_HOST')
+    database = os.getenv('DB_NAME')
 
     engine = configure_sqlalchemy_conn(username=username,
                                        password=password,
