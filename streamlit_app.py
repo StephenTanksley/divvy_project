@@ -48,7 +48,9 @@ def format_sql(
         hour_start: int=None,
         hour_end: int=None
         ):
-    query_builder = """
+
+    
+    query_builder = f"""
 SELECT 
     t.ride_id, 
     t.rideable_type, 
@@ -174,6 +176,7 @@ def main():
     In this data exploration environment, we'll take a look at two distinct pieces to this:
 
     - [Bicycles are great for the environment](#environment)
+    - [Bicycles make a lot of good financial sense](#finance)
     - [Bike riding is great for your health](#health)
     """)
 
@@ -188,10 +191,8 @@ def main():
     # time_range_text = f"between {start_time.strftime("%H:%M") if time_checkbox else default_min_time} and {end_time.strftime("%H:%M") if time_checkbox else default_max_time}"
 
     environment_text_1 = f"""
-    ### :material/directions_bike: :material/directions_bike: :material/directions_bike:
     ## Environment
-    ### :material/directions_bike: :material/directions_bike: :material/directions_bike:
-
+    ---
     For this first section, let's just look at a sampling of some environmental impacts from bike transit
     to see what a difference it makes.
     
@@ -220,47 +221,33 @@ def main():
 
     st.markdown(body=environment_text_2)
 
+    financial_data = {
+        'average_salary': 59384.00,
+        'average_car_cost_annual': 12297.00,
+        'annual_divvy_membership': 143.00,
+        'annual_all_access_metra_pass': 1980.00
+    }
 
-    financial_text = f"""
-    ## Health :material/directions_bike:
+    financial_text = f"""## Finance
+---
 
-    We're told to get active every day in order to keep weight off and keep hearts healthy, but 
+Let's face it: Cars are expensive. At a time when the average American would struggle to field a surprise $500 expense, a car represents a very hefty price for admission to the American dream.
+Due to the way that we've mostly built our cities and suburbs (low to medium density with lots of single-family zoned residential areas), we rely on our cars to get around unless we happen to live in a city with a good transit system.
 
-    """
+A few facts:
+1. [Investopedia](https://www.investopedia.com/should-you-ditch-your-second-car-in-retirement-the-surprising-savings-of-downsizing-11734592, "Should you ditch your second car in retirement?") points out that the average cost of owning a new vehicle is about \$12,297.00 per year. 
+This figure represents a new vehicle which is paid for with financing, so if you purchased your vehicle with cash or the vehicle is already paid off, this figure would be lower.
+2. [USA Today](https://www.usatoday.com/money/blueprint/business/hr-payroll/average-salary-us/#source, "Average salary in the U.S. in 2024") reports that the average income for a worker in the United States is about \$59,384.00. 
+This figure represents the national average and does not discriminate for factors like age, race, gender or profession.3) If we run the numbers on these figures, we can see that in our average scenario, \$12,297.00 is approximately 20.71% of \$59,384.00  
+3. By way of contrast, a Divvy bike membership costs \$143.90 billed up front to cover a whole year of riding. A Divvy membership for a whole year costs only {round((financial_data['annual_divvy_membership'] / financial_data['average_salary']) * 100, 2)}% of the above-mentioned average salary of \$59,384.00 as opposed to 20.71%
+4. If you were commuting in from the suburbs and needed transit options, Chicago's Metra service in particular offers an exceptional value with a Metra Monthly Pass + Regional Connect option. 
+At its maximum cost connecting all Metra zones and all lines within the city, this pass would enable a rider to take any bus (CTA and PACE), any train (Metra and CTA) anywhere within the Chicago metro area (including suburbs) for about \$1,980.00. 
+If you want to be cheeky, add Divvy for \${financial_data['annual_divvy_membership']} for a grand total of \${financial_data['annual_all_access_metra_pass'] + financial_data['annual_divvy_membership']} to get around the city and suburbs, never need to park, never need gas, etc. Divided by 12 months per year, you're only looking at paying \$176.92 per month this way. 
+It sounds like a lot, but when you take into consideration that you wouldn't need to pay for parking, gas, insurance, maintenance, license, title, the long term savings add up.
+"""
+
+    st.markdown(body=financial_text)
 
 
 if __name__ == '__main__':
     main()
-
-
-
-    """
-    TODO: This whole page needs fixing. Long story short - I want to make the case that 
-        1) Bicycles are better for the environment
-        2) Bicycles are cheaper than car ownership
-        3) Bike riding is great for your health
-        4) Bike infrastructure types
-        5) Bike infrastructure advocacy
-        6) What to do for Chicago natives (include the utility to look up local aldermen and contact them to advocate for bicycle infrastructure and reclaiming streets)
-    """
-    # https://www.bts.gov/topics/bicycle-and-pedestrian-travel - bicycle and pedestrian travel statistics from the government
-    # https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle
-    # https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator#results
-    # https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle -- average CO2 emitted by a typical passenger vehicle.
-    # https://chicago.councilmatic.org/person/martin-matthew-j-54f1707f5a16/?view=donations
-    # https://www.chicago.gov/city/en/depts/mayor/provdrs/your_ward_and_alderman/svcs/find_my_alderman.html
-    # https://www.fhwa.dot.gov/tpm/guidance/avo_factors.pdf - average vehicle occupancy for trips is 1.7. I could just round this up to 2 to be generous.
-    # https://www.procyclingcoaching.com/resources/carbon-emissions-offset-calculator
-    # https://www.intechopen.com/chapters/71662
-    # https://www.thedrive.com/news/tire-dust-makes-up-the-majority-of-ocean-microplastics-study-finds
-    # https://pmc.ncbi.nlm.nih.gov/articles/PMC10546027/#s3
-
-
-    
-    """ There's a few things to talk about here:
-            There's the environmental impact of the over-reliance on roads and car-based infrastructure. 
-            There's the effects of converting so much green space to car space. 
-            There's also an argument to be made for the effect that car-focused infrastructure has on splitting up communities. 
-            Not to mention microplastics in the environment. 
-            The thing to point out here is that our choice of transit has not just direct, first-order effects, but plenty of downstream ramifications as well.
-    """
