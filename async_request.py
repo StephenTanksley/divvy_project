@@ -62,7 +62,7 @@ async def main(items, rate, max):
 if __name__ == '__main__':
     final_list = []
     # This is just a pickled file of the URLs from the Mapbox requests.
-    with open("/home/stephen-tanksley/Desktop/Data/station_pairs_0.pickle", 'rb') as file:
+    with open("/home/stephen-tanksley/Desktop/Data/station_pairs_1.pickle", 'rb') as file:
         # Pickling is an unsafe practice. Never open pickled files where you don't already know what's in it.
         items = pickle.load(file, encoding='utf-8')
 
@@ -84,5 +84,5 @@ if __name__ == '__main__':
         final_list = final_list[0]
         final_list_json = json.dumps(final_list)
 
-        with open('./final_list_test_b.json', 'w') as file:
+        with open('./final_list_test_c.json', 'w') as file:
             file.write(final_list_json)
